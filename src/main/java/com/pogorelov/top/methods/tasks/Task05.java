@@ -30,4 +30,111 @@ package com.pogorelov.top.methods.tasks;
  * Дракон атакует и побеждает
  */
 public class Task05 {
+    int dragonHealth;
+    int dragonAttack;
+    int spearmanHealth;
+    int spearmanAttack;
+    int numberOfSpearman = 15;
+    int woundedSpearmanHealth = 0;
+    boolean isSpearmanMove = true;
+
+    /**
+     * Конструктор.
+     */
+    public Task05(int dragonHealth, int dragonAttack, int spearmanHealth, int spearmanAttack) {
+        this.dragonHealth = dragonHealth;
+        this.dragonAttack = dragonAttack;
+        this.spearmanHealth = spearmanHealth;
+        this.spearmanAttack = spearmanAttack;
+    }
+
+    /**
+     * Метод запускает бой.
+     */
+    public void runFight() {
+        boolean flag = true;
+        while (flag) {
+            if (isSpearmanMove) {
+                if (numberOfSpearman > 0) {
+                    spearmanMove();
+                    showInfo();
+                    isSpearmanMove = false;
+                    if (dragonHealth <= 0) {
+                        System.out.println("Копейщики победили\n");
+                        flag = false;
+                    }
+                } else System.out.println("У вас нет копейщиков для нападения");
+            } else {
+                dragonMove();
+                showInfo();
+                isSpearmanMove = true;
+                if (numberOfSpearman <= 0) {
+                    System.out.println("Дракон победил\n");
+                    flag = false;
+                }
+            }
+        }
+    }
+
+    /**
+     * Метод выводит информацию о здоровье дракона и количестве копейщиков.
+     */
+    public void showInfo() {
+        if (dragonHealth <= 0) System.out.printf("\u001B[32mДракон: УБИТ!\nКопейщики: осталось %d единиц\u001B[0m",
+                numberOfSpearman);
+        else if (numberOfSpearman < 0 || numberOfSpearman == 0 && woundedSpearmanHealth == 0)
+            System.out.printf("\u001B[32mДракон: осталось %d здоровья\nКопейщики: УБИТЫ!\u001B[0m",
+                    dragonHealth);
+        else
+            System.out.printf("\u001B[32mДракон: осталось %d здоровья\nКопейщики: осталось %d единиц\u001B[0m",
+                    dragonHealth, numberOfSpearman);
+        if (woundedSpearmanHealth > 0 && numberOfSpearman >= 0)
+            System.out.printf("\u001B[33m (у 1 из них осталось %d здоровья)\u001B[0m", woundedSpearmanHealth);
+        System.out.println("\n");
+    }
+
+
+    public void spearmanMove() {
+        System.out.println("\u001B[34mХОД КОПЕЙЩИКОВ:\u001B[0m");
+        dragonHealth -= numberOfSpearman * spearmanAttack;
+        System.out.printf("Копейщики наносят урон %d\n",
+                numberOfSpearman * spearmanAttack);
+        System.out.println();
+    }
+
+    public void dragonMove() {
+        int numberOfSpearmanKilled = dragonAttack / spearmanHealth;//количество убитых копейщиков
+        int restOfTheAttack = dragonAttack - numberOfSpearmanKilled * spearmanHealth;//остаток атаки
+
+        System.out.println("\u001B[31mХОД ДРАКОНА:\u001B[0m");
+        //если небыло раненых, рассчитываем сколько здоровья останется после удара у раненного (if restOfTheAttack > 0)
+        if (woundedSpearmanHealth == 0) {
+            woundedSpearmanHealth = spearmanHealth - restOfTheAttack;
+            //если были раненые:
+        } else if (woundedSpearmanHealth > 0) {
+            //если здровье раненого выше чем restOfTheAttack, просто отнимаем
+            if (woundedSpearmanHealth > restOfTheAttack) woundedSpearmanHealth -= restOfTheAttack;
+            //если здоровья столько же или меньше, добавляем к показателю numberOfSpearmanKilled еще единицу и
+            //заново вычисляем значение раненых.
+            else {
+                numberOfSpearmanKilled++;
+                woundedSpearmanHealth = woundedSpearmanHealth - restOfTheAttack + spearmanHealth;
+                //если
+                if (woundedSpearmanHealth == spearmanHealth) woundedSpearmanHealth = 0;
+            }
+        }
+        numberOfSpearman -= numberOfSpearmanKilled;
+        System.out.println("rrr="+numberOfSpearman);
+        if (numberOfSpearman >= numberOfSpearmanKilled) {
+            System.out.printf("Дракон наносит урон %d. %d копейщиков погибают\n",
+                    dragonAttack, numberOfSpearmanKilled);
+        } else {
+            System.out.printf("Дракон наносит урон %d. %d копейщиков погибают\n",
+                    dragonAttack, numberOfSpearman + numberOfSpearmanKilled);//прибавляю обратно numberOfSpearmanKilled,
+            // чтобы вывод в консоль был коректен и количество убитых не ушло в минус
+            numberOfSpearman = 0;
+            woundedSpearmanHealth = 0;
+        }
+        System.out.println();
+    }
 }

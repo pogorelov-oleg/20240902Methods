@@ -1,9 +1,6 @@
 package com.pogorelov.top.methods;
 
-import com.pogorelov.top.methods.tasks.Task01;
-import com.pogorelov.top.methods.tasks.Task02;
-import com.pogorelov.top.methods.tasks.Task03;
-import com.pogorelov.top.methods.tasks.Task04;
+import com.pogorelov.top.methods.tasks.*;
 
 public class Main {
     public static void main(String[] args) {
@@ -96,6 +93,27 @@ public class Main {
         Task04.printTriangle(triangle);
         System.out.println("\nРешение с визуальной схемой пути:");
         Task04.maxSumWay(triangle);
+
+
+        System.out.println("\n\n\nTask05");
+        int dragonHealth = 800;
+        int dragonAttack = 36;
+        int spearmanHealth = 15;
+        int spearmanAttack = 10;
+        Task05 task05 = new Task05(dragonHealth, dragonAttack, spearmanHealth, spearmanAttack);
+        task05.runFight();
+
+
+        System.out.println("\n\n\nTask06");
+        String incorrect = "[ a)b ([c] d)])";
+        String correct = "(a[b](f[(g)(g)]))";
+
+        System.out.println(incorrect);
+        Task06.checkBrackets(incorrect);
+        System.out.println();
+
+        System.out.println(correct);
+        Task06.checkBrackets(correct);
 
 
     }
