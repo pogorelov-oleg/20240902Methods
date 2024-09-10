@@ -30,13 +30,12 @@ package com.pogorelov.top.methods.tasks;
  * Дракон атакует и побеждает
  */
 public class Task05 {
-    int dragonHealth;
-    int dragonAttack;
-    int spearmanHealth;
-    int spearmanAttack;
-    int numberOfSpearman = 15;
-    int woundedSpearmanHealth = 0;
-    boolean isSpearmanMove = true;
+    private int totalSpearmanHealth;
+    private int dragonHealth;
+    private final int dragonAttack;
+    private final int spearmanHealth;
+    private final int spearmanAttack;
+    private boolean isSpearmanMove = true;
 
     /**
      * Конструктор.
@@ -49,26 +48,30 @@ public class Task05 {
     }
 
     /**
-     * Метод запускает бой.
+     * Метод запускает бой и выводит подробный лог боя в консоль.
      */
     public void runFight() {
         boolean flag = true;
+
         while (flag) {
             if (isSpearmanMove) {
-                if (numberOfSpearman > 0) {
+                if (totalSpearmanHealth > 0) {
                     spearmanMove();
-                    showInfo();
+                    showAllUnitsInfo();
                     isSpearmanMove = false;
                     if (dragonHealth <= 0) {
                         System.out.println("Копейщики победили\n");
                         flag = false;
                     }
-                } else System.out.println("У вас нет копейщиков для нападения");
+                } else {
+                    System.out.println("У вас нет копейщиков для нападения");
+                    flag = false;
+                }
             } else {
                 dragonMove();
-                showInfo();
+                showAllUnitsInfo();
                 isSpearmanMove = true;
-                if (numberOfSpearman <= 0) {
+                if (totalSpearmanHealth <= 0) {
                     System.out.println("Дракон победил\n");
                     flag = false;
                 }
@@ -77,64 +80,107 @@ public class Task05 {
     }
 
     /**
+     * Запускает ход копейщика.
+     */
+    private void spearmanMove() {
+        System.out.println("\u001B[34mХОД КОПЕЙЩИКОВ:\u001B[0m");
+        dragonHealth -= getNumberOfSpearman() * spearmanAttack;
+        System.out.printf("Копейщики наносят урон %d\n",
+                getNumberOfSpearman() * spearmanAttack);
+        if (dragonHealth < 0) dragonHealth = 0;
+    }
+
+    /**
+     * Запускает ход дракона.
+     */
+    private void dragonMove() {
+        int numberOfSpearmanBefore = getNumberOfSpearman();
+
+        System.out.println("\u001B[31mХОД ДРАКОНА:\u001B[0m");
+        totalSpearmanHealth -= dragonAttack;
+        System.out.printf("Дракон наносит урон %d. %d копейщиков погибают\n",
+                dragonAttack, numberOfSpearmanBefore - getNumberOfSpearman());
+        if (totalSpearmanHealth < 0) totalSpearmanHealth = 0;
+    }
+
+    /**
      * Метод выводит информацию о здоровье дракона и количестве копейщиков.
      */
-    public void showInfo() {
-        if (dragonHealth <= 0) System.out.printf("\u001B[32mДракон: УБИТ!\nКопейщики: осталось %d единиц\u001B[0m",
-                numberOfSpearman);
-        else if (numberOfSpearman < 0 || numberOfSpearman == 0 && woundedSpearmanHealth == 0)
-            System.out.printf("\u001B[32mДракон: осталось %d здоровья\nКопейщики: УБИТЫ!\u001B[0m",
+    private void showAllUnitsInfo() {
+        if (dragonHealth <= 0) System.out.printf("\u001B[32mДракон: УБИТ!\nКопейщики: %s\u001B[0m",
+                spearmanInfo());
+        else if (totalSpearmanHealth <= 0)
+            System.out.printf("\u001B[32mДракон: %d здоровья\nКопейщики: УБИТЫ!\u001B[0m",
                     dragonHealth);
         else
-            System.out.printf("\u001B[32mДракон: осталось %d здоровья\nКопейщики: осталось %d единиц\u001B[0m",
-                    dragonHealth, numberOfSpearman);
-        if (woundedSpearmanHealth > 0 && numberOfSpearman >= 0)
-            System.out.printf("\u001B[33m (у 1 из них осталось %d здоровья)\u001B[0m", woundedSpearmanHealth);
+            System.out.printf("\u001B[32mДракон: %d здоровья\nКопейщики: %s\u001B[0m",
+                    dragonHealth, spearmanInfo());
         System.out.println("\n");
     }
 
+    /**
+     * Метод вычисляет количество целых копейщиков и остаток здоровья у раненого (если такой есть).
+     * Результат возвращает в виде строки.
+     */
+    private String spearmanInfo() {
+        String spearmanInfo;
+        int whole = totalSpearmanHealth / spearmanHealth;
+        int wounded = totalSpearmanHealth - whole * spearmanHealth;
 
-    public void spearmanMove() {
-        System.out.println("\u001B[34mХОД КОПЕЙЩИКОВ:\u001B[0m");
-        dragonHealth -= numberOfSpearman * spearmanAttack;
-        System.out.printf("Копейщики наносят урон %d\n",
-                numberOfSpearman * spearmanAttack);
-        System.out.println();
+        if (wounded > 0)
+            spearmanInfo = String.format("%d + 1 раненый(%dhp)", whole, wounded);
+        else spearmanInfo = String.format("%d", whole);
+
+        return spearmanInfo;
     }
 
-    public void dragonMove() {
-        int numberOfSpearmanKilled = dragonAttack / spearmanHealth;//количество убитых копейщиков
-        int restOfTheAttack = dragonAttack - numberOfSpearmanKilled * spearmanHealth;//остаток атаки
+    /**
+     * Метод рассчитывает и возвращает необходимое минимальное количество копейщиков,
+     * необходимых для победы над драконом.
+     */
+    public int numberOfSpearmanCalculator() {
+        int result = 0;
+        int dragonHealthTemp;
+        boolean flag = false;
 
-        System.out.println("\u001B[31mХОД ДРАКОНА:\u001B[0m");
-        //если небыло раненых, рассчитываем сколько здоровья останется после удара у раненного (if restOfTheAttack > 0)
-        if (woundedSpearmanHealth == 0) {
-            woundedSpearmanHealth = spearmanHealth - restOfTheAttack;
-            //если были раненые:
-        } else if (woundedSpearmanHealth > 0) {
-            //если здровье раненого выше чем restOfTheAttack, просто отнимаем
-            if (woundedSpearmanHealth > restOfTheAttack) woundedSpearmanHealth -= restOfTheAttack;
-            //если здоровья столько же или меньше, добавляем к показателю numberOfSpearmanKilled еще единицу и
-            //заново вычисляем значение раненых.
-            else {
-                numberOfSpearmanKilled++;
-                woundedSpearmanHealth = woundedSpearmanHealth - restOfTheAttack + spearmanHealth;
-                //если
-                if (woundedSpearmanHealth == spearmanHealth) woundedSpearmanHealth = 0;
+        while (!flag) {
+            flag = true;
+            result++;
+
+            dragonHealthTemp = dragonHealth;
+            totalSpearmanHealth = result * spearmanHealth;
+
+            while (true) {
+                dragonHealthTemp -= getNumberOfSpearman() * spearmanAttack;
+                if (dragonHealthTemp <= 0) break;
+                totalSpearmanHealth -= dragonAttack;
+                if (totalSpearmanHealth <= 0) break;
             }
+
+            if (dragonHealthTemp > 0) flag = false;
         }
-        numberOfSpearman -= numberOfSpearmanKilled;
-        System.out.println("rrr="+numberOfSpearman);
-        if (numberOfSpearman >= numberOfSpearmanKilled) {
-            System.out.printf("Дракон наносит урон %d. %d копейщиков погибают\n",
-                    dragonAttack, numberOfSpearmanKilled);
-        } else {
-            System.out.printf("Дракон наносит урон %d. %d копейщиков погибают\n",
-                    dragonAttack, numberOfSpearman + numberOfSpearmanKilled);//прибавляю обратно numberOfSpearmanKilled,
-            // чтобы вывод в консоль был коректен и количество убитых не ушло в минус
-            numberOfSpearman = 0;
-            woundedSpearmanHealth = 0;
-        }
-        System.out.println();
+
+        return result;
+    }
+
+    /**
+     * Метод рассчитывает общее количество бойцов (с учетом раненых) и возвращает его значение.
+     */
+    private int getNumberOfSpearman() {
+        int numberOfSpearman = totalSpearmanHealth / spearmanHealth;
+
+        if (totalSpearmanHealth < 0)
+            return 0;
+        if (totalSpearmanHealth % spearmanHealth != 0) numberOfSpearman++;
+
+        return numberOfSpearman;
+    }
+
+    /**
+     * Метод принимает значение количиства копейщиков и устанавливает
+     * параметр totalSpearmanHealth (общее здоровье копейщиков).
+     */
+    public void setNumberOfSpearman(int numberOfSpearman) {
+        this.totalSpearmanHealth = numberOfSpearman * this.spearmanHealth;
     }
 }

@@ -96,12 +96,16 @@ public class Main {
 
 
         System.out.println("\n\n\nTask05");
-        int dragonHealth = 800;
-        int dragonAttack = 36;
-        int spearmanHealth = 15;
+        int dragonHealth = 600;
+        int dragonAttack = 40;
+        int spearmanHealth = 16;
         int spearmanAttack = 10;
+
         Task05 task05 = new Task05(dragonHealth, dragonAttack, spearmanHealth, spearmanAttack);
+        int numberOfSpearman = task05.numberOfSpearmanCalculator();
+        task05.setNumberOfSpearman(numberOfSpearman);
         task05.runFight();
+        System.out.printf("Для победы над драконом нужно минимум %d копейщиков", numberOfSpearman);
 
 
         System.out.println("\n\n\nTask06");
@@ -114,7 +118,5 @@ public class Main {
 
         System.out.println(correct);
         Task06.checkBrackets(correct);
-
-
     }
 }

@@ -27,6 +27,7 @@ public class Task06 {
      */
     public static void checkBrackets(String string) {
         int[] arrayToCheck = getArrayToCheck(string);
+
         if (noZero(arrayToCheck)) System.out.println("Правильная строка.");
         else {
             System.out.print("ОШИБКА! Исправьте красные скобки: ");
@@ -95,6 +96,7 @@ public class Task06 {
                 }
             }
         }
+
         return arrayToCheck;
     }
 
@@ -103,11 +105,13 @@ public class Task06 {
      */
     private static boolean noZero(int[] array) {
         boolean noZero = true;
+
         for (int element : array)
             if (element == 0) {
                 noZero = false;
                 break;
             }
+
         return noZero;
     }
 }

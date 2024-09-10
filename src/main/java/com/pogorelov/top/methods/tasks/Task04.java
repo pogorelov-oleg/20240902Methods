@@ -37,6 +37,7 @@ public class Task04 {
         int maxValue = 100;
         int[][] triangle = new int[rows][];
         int numberOfElements = 1;
+
         for (int i = 0; i < rows; i++) {
             triangle[i] = new int[numberOfElements];
             for (int j = 0; j < triangle[i].length; j++) {
@@ -44,6 +45,7 @@ public class Task04 {
             }
             numberOfElements++;
         }
+
         return triangle;
     }
 
@@ -83,6 +85,7 @@ public class Task04 {
         //будем подкрашивать вершины при выводе треугольника)
         int maxIndex = 0;
         temp[0][0] = -1;
+
         System.out.print("Путь: ");
         for (int i = 1; i < temp.length; i++) {
             if (temp[i][maxIndex] < temp[i][maxIndex + 1]) {
@@ -100,6 +103,7 @@ public class Task04 {
         //Выводим в консоль треугольник с подкрашенными элементами, через которые проходит путь
         for (int i = 0; i < triangleArray.length; i++) {
             int numberOfTabulations = triangleArray.length - triangleArray[i].length;
+
             while (numberOfTabulations > 0) {
                 System.out.print("\t");
                 numberOfTabulations--;
@@ -109,7 +113,7 @@ public class Task04 {
                     System.out.printf("\u001B[31m%d\t\t\u001B[0m", triangleArray[i][j]);
                 } else System.out.printf("%d\t\t", triangleArray[i][j]);
             }
-            System.out.println("\n");
+            System.out.println();
         }
     }
 
@@ -118,10 +122,12 @@ public class Task04 {
      */
     private static int[][] cloneArray(int[][] array) {
         int[][] clone = new int[array.length][];
+
         for (int i = 0; i < array.length; i++) {
             clone[i] = new int[array[i].length];
             System.arraycopy(array[i], 0, clone[i], 0, array[i].length);
         }
+
         return clone;
     }
 }

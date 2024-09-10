@@ -18,12 +18,14 @@ public class Task01 {
      */
     public static int[][] createDiagonalMatrix(int length, int value) {
         int[][] array = new int[length][length];
+
         for (int i = 0; i < length; i++) {
             for (int j = 0; j < length; j++) {
                 if (j == i) array[i][j] = value;
                 else array[i][j] = 0;
             }
         }
+
         return array;
     }
 
@@ -32,11 +34,13 @@ public class Task01 {
      */
     public static int[][] createNullMatrix(int length) {
         int[][] array = new int[length][length];
+
         for (int i = 0; i < length; i++) {
             for (int j = 0; j < length; j++) {
                 array[i][j] = 0;
             }
         }
+
         return array;
     }
 
@@ -45,11 +49,13 @@ public class Task01 {
      */
     public static int[][] additionMatrix(int[][] matrixA, int[][] matrixB) {
         int[][] result = new int[matrixA.length][matrixA[0].length];
+
         for (int i = 0; i < result.length; i++) {
             for (int j = 0; j < result[i].length; j++) {
                 result[i][j] = matrixA[i][j] + matrixB[i][j];
             }
         }
+
         return result;
     }
 
@@ -57,11 +63,12 @@ public class Task01 {
      * Метод возвращает произведение двух матриц.
      */
     public static int[][] multiplyOfTwoMatrix(int[][] matrixA, int[][] matrixB) {
+        int[][] result = new int[matrixA.length][matrixB[0].length];
+
         if (matrixA[0].length != matrixB.length) {
             System.out.println("Эти матрицы нельзя перемножить");
             return null;
         }
-        int[][] result = new int[matrixA.length][matrixB[0].length];
         for (int i = 0; i < result.length; i++) {
             for (int j = 0; j < result[0].length; j++) {
                 result[i][j] = 0;
@@ -70,6 +77,7 @@ public class Task01 {
                 }
             }
         }
+
         return result;
     }
 
@@ -78,11 +86,13 @@ public class Task01 {
      */
     public static int[][] multiplyMatrixByNumber(int[][] matrix, int number) {
         int[][] result = new int[matrix.length][matrix[0].length];
+
         for (int i = 0; i < matrix.length; i++) {
             for (int j = 0; j < matrix.length; j++) {
                 result[i][j] = matrix[i][j] * number;
             }
         }
+
         return result;
     }
 
@@ -91,6 +101,7 @@ public class Task01 {
      */
     public static int detMatrix(int[][] matrix) {
         int result = 0;
+
         if (matrix.length == 2) {
             result = matrix[0][0] * matrix[1][1] - matrix[1][0] * matrix[0][1];
         } else {
@@ -104,6 +115,7 @@ public class Task01 {
                 result += k * matrix[0][i] * detMatrix(getMinor(matrix, i));
             }
         }
+
         return result;
     }
 
@@ -116,6 +128,7 @@ public class Task01 {
         int[][] minor = new int[minorLength][minorLength];
         int dI = 0;
         int dJ;
+
         for (int i = 0; i <= minorLength; i++) {
             dJ = 0;
             for (int j = 0; j <= minorLength; j++) {
@@ -130,6 +143,7 @@ public class Task01 {
                 }
             }
         }
+
         return minor;
     }
 
