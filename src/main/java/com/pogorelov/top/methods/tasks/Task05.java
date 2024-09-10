@@ -146,7 +146,6 @@ public class Task05 {
         while (!flag) {
             flag = true;
             result++;
-
             dragonHealthTemp = dragonHealth;
             totalSpearmanHealth = result * spearmanHealth;
 
